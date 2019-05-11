@@ -10,3 +10,5 @@
 1. Our public key is (e, n)
 1. Pick d, so that d * e(mod ϕ(n)) = 1
 1. Our private key is (d, n)
+
+### Encrypt the mesage:
