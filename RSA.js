@@ -1,5 +1,5 @@
 const crypto = require("crypto");
-console.log(BigInt(42));
+const bigInt = require("big-integer");
 
 class RSA {
   isPrime(x) {
@@ -24,12 +24,13 @@ class RSA {
     if (n % 2 == 0 || n < 2) {
       return false;
     }
-    var s = 0;
-    var d = n - 1;
+    var s = bigInt(0);
+    var d = bigInt(n) - 1;
     while (d % 2 == 0) {
       d /= 2;
       s++;
     }
+
     WitnessLoop: do {
       let x = Math.pow(2 + Math.floor(Math.random() * (n - 3)), d) % n;
       if (x == 1 || x == n - 1) {
@@ -53,7 +54,7 @@ class RSA {
     let temp;
     while (true) {
       temp = a % b;
-      if (temp === 0) {
+      if (temp == 0) {
         return b;
       }
       a = b;
@@ -65,21 +66,25 @@ class RSA {
     /**
      * Generate a random number with a length of bitlength
      */
-    let randomNumber = crypto.randomBytes(2 ^ (bitlength + 1));
-    console.log(randomNumber);
+    let randomNumber = crypto.randomBytes(2 ^ (bitlength + 1)).toString("hex");
     /**
      * Set bit at index 0 to 1 (ensures that it's odd)
      */
-    randomNumber = randomNumber | (1 << 0);
+    randomNumber = bigInt(randomNumber, 16);
+    if (randomNumber.isEven()) {
+      randomNumber += 1;
+    }
     /**
-     * Set bit at highest index to 1. (Ensures that the number is of length
-     * of bitlength)
+     * TODO bitshifting doens't work with bigint,
+     * find a better solution
      */
-    randomNumber = randomNumber | (1 << bitlength);
-    while (!this.millerRabinTest(randomNumber, 200)) {
+    // randomNumber = randomNumber | (1 << 0);
+    // randomNumber = randomNumber | (1 << bitlength);
+    while (!this.millerRabinTest(randomNumber, 5)) {
       /**
        * += 2 because we know that the number is odd
        */
+      console.log("here");
       randomNumber += 2;
     }
     return randomNumber;
@@ -110,7 +115,5 @@ class RSA {
   }
 }
 
-console.log(crypto);
-
 const rsaGen = new RSA();
-rsaGen.generateKeys(1024);
+rsaGen.generateKeys(512);
