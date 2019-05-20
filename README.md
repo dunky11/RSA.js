@@ -1,3 +1,6 @@
+##WARNING
+This is a work in progress, do not use this to do any serious encryption.
+
 ## How to do this:
 ### Generate keypair:
 1. Get two random prime numbers -> p and q.
